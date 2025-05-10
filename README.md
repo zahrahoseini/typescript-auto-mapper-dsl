@@ -1,49 +1,35 @@
-# typescript-auto-mapper-dsl
+// README.md
 
-## 🔄 AutoMapper in TypeScript (DSL-based)
+# 🔄 TypeScript AutoMapper DSL
 
-This repository demonstrates a powerful and extensible way to transform data from Entity to DTO using a custom DSL-based AutoMapper in TypeScript.
-
-> The goal is to have a reusable, clean, and consistent way to map complex nested objects with full type safety.
+A lightweight and extensible object mapper in TypeScript using a simple DSL syntax to convert Entities to DTOs with full type safety.
 
 ---
 
-## 📦 Features
+## 🚀 Features
 
-* 🔁 Supports object, nested, and array mapping
-* 🔒 Fully type-safe (generic types)
-* 🧠 DSL-style configuration for readability
-* ✅ Ideal for use with Redux Toolkit Query `transformResponse`
-* 🧪 Ready for unit testing and reuse across your app
+- 🔁 Nested, object, and array transformation
+- 🔒 Strong type support with generics
+- 🧠 DSL-based configuration
+- ✅ Ideal for use with RTK Query `transformResponse`
+- ♻️ Reusable mapping logic
 
 ---
 
-## 🚀 Example Use Case
+## 🧪 Example: Map `ProductEntity` → `ProductDTO`
 
-We want to convert a nested `ProductEntity` from backend to a frontend-ready `ProductDTO`.
-
-### 🔹 Input: `ProductEntity`
-
+### Input `ProductEntity`
 ```ts
-const product: ProductEntity = {
+const product = {
   id: 301,
   name: 'Gaming Laptop',
-  specs: {
-    cpu: 'Intel i7',
-    ram: '16GB',
-    gpu: 'RTX 3060',
-  },
-  priceInfo: {
-    basePrice: 1500,
-    discount: 100,
-    finalPrice: 1400,
-  },
+  specs: { cpu: 'Intel i7', ram: '16GB', gpu: 'RTX 3060' },
+  priceInfo: { basePrice: 1500, discount: 100, finalPrice: 1400 },
   tags: ['electronics', 'laptop', 'gaming'],
 };
 ```
 
-### 🔹 Target: `ProductDTO`
-
+### Target `ProductDTO`
 ```ts
 interface ProductDTO {
   productId: number;
@@ -54,87 +40,70 @@ interface ProductDTO {
 }
 ```
 
-### 🔹 Mapping Config
-
+### DSL Mapping Config
 ```ts
-const productToDTOModel: MapperConfig<ProductEntity, ProductDTO> = {
+const productToDTOModel = {
   productId: 'id',
   title: 'name',
   finalPrice: 'priceInfo.finalPrice',
   specsSummary: (src) => `${src.specs.cpu} / ${src.specs.ram} / ${src.specs.gpu}`,
-  categories: 'tags',
+  categories: 'tags'
 };
 ```
 
-### 🔹 Usage
-
+### Result
 ```ts
-const productDTO = mapModel(product, productToDTOModel);
-
-console.log(productDTO);
-/*
-{
-  productId: 301,
-  title: 'Gaming Laptop',
-  finalPrice: 1400,
-  specsSummary: 'Intel i7 / 16GB / RTX 3060',
-  categories: ['electronics', 'laptop', 'gaming']
-}
-*/
+const dto = mapModel(product, productToDTOModel);
+// → {
+//   productId: 301,
+//   title: 'Gaming Laptop',
+//   finalPrice: 1400,
+//   specsSummary: 'Intel i7 / 16GB / RTX 3060',
+//   categories: ['electronics', 'laptop', 'gaming']
+// }
 ```
 
 ---
 
-## 🛠 Step-by-Step Usage
-
-### Step 1: Define the Mapping Model
-
-```ts
-const model: MapperConfig<SourceType, DestinationType> = {
-  ... // DSL rules
-};
+## 📁 Folder Structure
 ```
-
-### Step 2: Call `mapModel`
-
-```ts
-const dto = mapModel(sourceObject, model);
+ts-automapper-dsl/
+├─ src/
+│  ├─ auto-mapper.ts
+│  ├─ map-model.ts
+│  ├─ index.ts
+│  └─ models/
+│     ├─ product.dto.ts
+│     ├─ product.entity.ts
+│     └─ product.mapper.ts
 ```
-
-### Step 3: Use it Anywhere
-
-* Inside RTK Query `transformResponse`
-* In adapters and services
-* In your frontend forms
 
 ---
 
-## ✅ Why We Use This Pattern
+## 📦 Install & Run
 
-🔹 **Maintainable**: DSL mapping is defined separately and easily updated
-🔹 **Reusable**: Shared across API, RTK, forms, etc.
-🔹 **Clean**: Eliminates boilerplate mapping logic
-🔹 **Composable**: Easy to extend for nested objects and arrays
-🔹 **Safe**: Keeps typings strict and clear
+```bash
+npm install
+npm run start
+```
 
 ---
+
+![alt text](image.png)
 
 ## ✅ Recommendation
 
-> Define mappings once, and use `mapModel()` throughout the app.
-> It simplifies transformations and ensures consistency across layers.
+Use `mapModel()` + separated DSL config files to:
+- Avoid repetitive mapping
+- Keep transformations readable and testable
+- Work across client/server consistently
 
 ---
 
-## 📁 Coming Soon
-
-* [ ] Tests
-* [ ] CLI for generating model configs
-* [ ] Reverse mapping (DTO → Entity)
-* [ ] Type-safe validation
+## 📌 Inspired by
+- AutoMapper (.NET)
+- class-transformer (NestJS)
 
 ---
 
-## 👏 Credits
-
-Inspired by AutoMapper in .NET but designed for modern TypeScript apps.
+MIT License © 2024
